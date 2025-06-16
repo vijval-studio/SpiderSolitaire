@@ -13,6 +13,8 @@ int move_count = 0;
 float time_taken;
 int deck[104];
 
+void main();
+
 void gen()
 {
     for(int i=0;i<8;i++)
@@ -62,9 +64,9 @@ void init(stk **stack)
         for(int j=0;j<10;j++)
         {
             if(i==4&&j>=4)
-              insertEnd(&stack[j],deck[i*10+j],1);
+                insertEnd(&stack[j],deck[i*10+j],1);
             else
-              insertEnd(&stack[j],deck[i*10+j],0);
+                insertEnd(&stack[j],deck[i*10+j],0);
 
         }
     }
@@ -100,153 +102,160 @@ void display(stk **stack)
         for(int j=0;j<10;j++)
         {
             if(i==-1)
-              printf("%d\t",j);
+                printf("%d\t",j);
             else
             {
-            	stk *st=stack[j];
-            	for(int k=0;k<i&&st!=NULL;k++)
-            	{
-                	st=st->next;
-            	}
-            	if(st!=NULL)
-            	{
-              		if(st->open==1)
-              		{
-              			if(st->value==1)
-                			printf("A\t");
-              			else if(st->value==11)
-                			printf("J\t");
-              			else if(st->value==12)
-                			printf("Q\t");
-              			else if(st->value==13)
-                			printf("K\t");
-              			else
-                			printf("%d\t",st->value);
-              		}
-              		else
-               			printf("X\t");
-            	}
-            	else
-            	{
-                	printf(" \t");
-            	}
+                stk *st=stack[j];
+                for(int k=0;k<i&&st!=NULL;k++)
+                {
+                    st=st->next;
+                }
+                if(st!=NULL)
+                {
+                    if(st->open==1)
+                    {
+                        if(st->value==1)
+                            printf("A\t");
+                        else if(st->value==11)
+                            printf("J\t");
+                        else if(st->value==12)
+                            printf("Q\t");
+                        else if(st->value==13)
+                            printf("K\t");
+                        else
+                            printf("%d\t",st->value);
+                    }
+                    else
+                        printf("X\t");
+                }
+                else
+                {
+                    printf(" \t");
+                }
             }
         }
         if(i==-1)
-          printf("\n");
+            printf("\n");
         printf("\n");
     }
 }
 
 int count=0;
 
-void check(stk **table) 
+void check(stk **table)
 {
-    for (int i = 0; i <= 9; i++) 
+    for (int i = 0; i <= 9; i++)
     {
         stk* a = table[i];
         stk* b;
         if(a==NULL)
-        	continue;
+            continue;
         while(a->next!=NULL)
         {
-        	a=a->next;
+            a=a->next;
         }
         if(a->value==1)
         {
-        	int j=0;
-        	for(j=1;j<13&&a!=NULL;j++)
-        	{
-        		if(a->value==j)
-        			a=a->prev;
-        		else
-        			break;
-        	}       
-           	if(a!=NULL&&j==13&&a->open==1)
-           	{
-           	    	if(a->prev!=NULL)
-           	    	{
-           	    		a->prev->open=1;
-           			a->prev->next=NULL;
-           		}
-           	    	else
-           	    	{
-           	    		a=a->next;
-           	    		table[i]->next=NULL;
-           	    		table[i]=NULL;
-           	    	}
-           		for(;a->next!=NULL;)
-           		{
-           			b=a;
-           			a=a->next;
-           			b->prev=NULL;
-           			b->next=NULL;
-           			a->prev=NULL;
-           			free(b);
-           		}
-           		free(a);
-           		count = count + 1;
-           	}
-         }
+            int j=0;
+            for(j=1;j<13&&a!=NULL;j++)
+            {
+                if(a->value==j)
+                    a=a->prev;
+                else
+                    break;
+            }
+            if(a!=NULL&&j==13&&a->open==1)
+            {
+                if(a->prev!=NULL)
+                {
+                    a->prev->open=1;
+                    a->prev->next=NULL;
+                }
+                else
+                {
+                    a=a->next;
+                    table[i]->next=NULL;
+                    table[i]=NULL;
+                }
+                for(;a->next!=NULL;)
+                {
+                    b=a;
+                    a=a->next;
+                    b->prev=NULL;
+                    b->next=NULL;
+                    a->prev=NULL;
+                    free(b);
+                }
+                free(a);
+                count = count + 1;
+            }
+        }
     }
-    if (count == 8) 
+    if (count == 8)
     {
-    	display(table);
-        printf("You won in %d moves and %d minutes %d seconds\n\n", move_count, (int)(time_taken/1000)/60, ((int)(time_taken/1000))%60);
-        exit(0);
+        display(table);
+        printf("The game is finished\n");
+        printf("You won in %d moves and %d minutes %d seconds\n\n", move_count, (int)(time_taken)/60, ((int)(time_taken))%60);
+        printf("Type q to quit or any other character to play again\n");
+        fflush(stdout);
+        char opt;
+        scanf("%c",&opt);
+        if(opt == 'q')
+            exit(0);
+        main();
     }
 }
 
 void add(stk **table)
 {
-	int i;
-	if(n_add == 5)
-		return;
-	for(i = 0; i<10; i++)
-	{
-		insertEnd(&table[i], deck[54+n_add*10+i], 1);
-	}
-	n_add++;
+    int i;
+    if(n_add == 5)
+        return;
+    for(i = 0; i<10; i++)
+    {
+        insertEnd(&table[i], deck[54+n_add*10+i], 1);
+    }
+    n_add++;
 }
 
 void move(stk **table)
 {
-   int ip, from, to;
-   char cip;	
-   cip=getchar();
-   if(cip=='\n')
-   	cip=getchar();
-  if(cip == '0')
-  {
-  	  add(table);
-  	  return;
-  }
-  else if(cip=='1')
-  {
-  	cip=getchar();
-  	if(cip=='0')
-  		ip=10;
-  	else if(cip==' '||cip=='\t'||cip=='\n')
-  		ip=1;
-	else if(cip=='1')
-		ip=11;
-	else if(cip=='2')
-  		ip=12;
-	else if(cip=='3')
-		ip=13;
-	else
-		ip=-1;
-  }
-  else if(cip == 'a' || cip == 'A')
-  	  ip = 1;
-  else if(cip == 'j' || cip == 'J')
-  	  ip = 11;
-  else if(cip == 'q' || cip == 'Q')
-  	  ip = 12;
-  else if(cip == 'k' || cip == 'K')
-  	  ip = 13;
-  else
-	    ip = (int)(cip-48);
+    int ip, from, to;
+    char cip;
+    cip=getchar();
+    if(cip=='\n')
+        cip=getchar();
+    if(cip == '0')
+    {
+        add(table);
+        return;
+    }
+    else if(cip=='1')
+    {
+        cip=getchar();
+        if(cip=='0')
+            ip=10;
+        else if(cip==' '||cip=='\t'||cip=='\n')
+            ip=1;
+        else if(cip=='1')
+            ip=11;
+        else if(cip=='2')
+            ip=12;
+        else if(cip=='3')
+            ip=13;
+        else
+            ip=-1;
+    }
+    else if(cip == 'a' || cip == 'A')
+        ip = 1;
+    else if(cip == 'j' || cip == 'J')
+        ip = 11;
+    else if(cip == 'q' || cip == 'Q')
+        ip = 12;
+    else if(cip == 'k' || cip == 'K')
+        ip = 13;
+    else
+        ip = (int)(cip-48);
     scanf("%d%d", &from, &to);
     cip=getchar();
     if (ip >=1 && ip <= 13 && from >= 0 && from < 10 && to >= 0 && to < 10 && from != to)
@@ -302,22 +311,24 @@ void move(stk **table)
 
 void main()
 {
-    clock_t start_time, end_time;
+    time_t start_time, end_time;
     gen();
     shuffle();
     stk *table[10];
     for(int i=0;i<10;i++)
         table[i]=NULL;
     init(table);
-    start_time = clock();
+    start_time = time(NULL);
     while(1)
     {
-      display(table);
-      move(table);
-      check(table);
-      end_time = clock();
-      time_taken = end_time - start_time;
-      printf("\nMove Count: %d\n", move_count);
-      printf("Time taken so far: %d minutes %d seconds\n\n", (int)(time_taken/1000)/60, ((int)(time_taken/1000))%60);
+        display(table);
+        fflush(stdout);
+        end_time = time(NULL);
+        time_taken = time_taken = difftime(end_time, start_time);
+        move(table);
+        check(table);
+        printf("\nMove Count: %d\n", move_count);
+        printf("Time taken so far: %d minutes %d seconds\n\n", (int)(time_taken)/60, ((int)(time_taken))%60);
+        fflush(stdout);
     }
 }
