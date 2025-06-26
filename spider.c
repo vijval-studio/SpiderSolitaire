@@ -164,7 +164,7 @@ void check(stk **table)
                 else
                     break;
             }
-            if(a!=NULL&&j==13&&a->open==1)
+            if(a!=NULL&&j==13&&a->open==1&&a->value==13)
             {
                 if(a->prev!=NULL)
                 {
